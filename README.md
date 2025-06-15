@@ -1,4 +1,4 @@
-# Hong Kong Community Care Services MCP Server
+# Hong Kong community and social welfare MCP Server
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/hkopenai/hk-community-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

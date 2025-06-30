@@ -3,8 +3,6 @@ import io
 import requests
 from typing import Dict, List, Any
 
-# No decorator import needed as tool is registered in app.py
-
 
 def fetch_elderly_wait_time_data(
     start_year: int, end_year: int

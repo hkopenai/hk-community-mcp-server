@@ -1,10 +1,10 @@
 import unittest
 from unittest import mock
 from unittest.mock import patch, Mock
-from hkopenai.hk_community_mcp_server.app import create_mcp_server
+from hkopenai.hk_community_mcp_server.server import create_mcp_server
 
 class TestApp(unittest.TestCase):
-    @patch('hkopenai.hk_community_mcp_server.app.FastMCP')
+    @patch('hkopenai.hk_community_mcp_server.server.FastMCP')
     @patch('hkopenai.hk_community_mcp_server.tool_elderly_wait_time_ccs.fetch_elderly_wait_time_data')
     def test_create_mcp_server(self, mock_tool_elderly, mock_fastmcp):
         # Setup mocks

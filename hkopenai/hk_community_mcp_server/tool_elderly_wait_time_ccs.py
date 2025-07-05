@@ -1,3 +1,10 @@
+"""
+Module for fetching elderly wait time data for community care services.
+
+This module provides tools to retrieve data on the number of applicants and average
+waiting times for subsidised community care services for the elderly in Hong Kong.
+"""
+
 import csv
 import io
 import requests
@@ -26,7 +33,7 @@ def fetch_elderly_wait_time_data(
     content = response.content.decode("utf-16-le")
     # Ensure consistent line endings by replacing \r\n with \n
     csv_file = io.StringIO(content)
-    csv_reader = csv.DictReader(csv_file, delimiter='\t')
+    csv_reader = csv.DictReader(csv_file, delimiter="\t")
 
     # Filter data by year range and extract English content only, excluding "As at date"
     filtered_data = []
@@ -41,15 +48,22 @@ def fetch_elderly_wait_time_data(
             if start_year <= year <= end_year:
                 # Filter to include only English columns and exclude "As at date"
                 english_data = {
-                    key: value for key, value in row.items()
-                    if key.strip().startswith("Subsidised CCS") or 
-                       key.strip().startswith("No. of applicants") or
-                       key.strip().startswith("Waiting time") or
-                       key.strip().startswith("No. of elderly persons classified")
+                    key: value
+                    for key, value in row.items()
+                    if key.strip().startswith("Subsidised CCS")
+                    or key.strip().startswith("No. of applicants")
+                    or key.strip().startswith("Waiting time")
+                    or key.strip().startswith("No. of elderly persons classified")
                 }
                 filtered_data.append({"date": date_str, "data": english_data})
         except ValueError as e:
-            filtered_data.append({"error": f"Invalid year format: {year_str}, error: {str(e)}", "date": date_str, "row": row})
+            filtered_data.append(
+                {
+                    "error": f"Invalid year format: {year_str}, error: {str(e)}",
+                    "date": date_str,
+                    "row": row,
+                }
+            )
 
     return filtered_data
 

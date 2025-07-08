@@ -34,7 +34,7 @@ def main():
     Parses command line arguments to determine the mode of operation (SSE or stdio)
     and starts the server accordingly.
     """
-    parser = argparse.ArgumentParser(description="HKO MCP Server")
+    parser = argparse.ArgumentParser(description="MCP Server")
     parser.add_argument(
         "-s", "--sse", action="store_true", help="Run in SSE mode instead of stdio"
     )

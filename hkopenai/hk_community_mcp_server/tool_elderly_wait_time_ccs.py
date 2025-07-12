@@ -9,6 +9,31 @@ import csv
 import io
 import requests
 from typing import Dict, List, Any
+from pydantic import Field
+from typing_extensions import Annotated
+
+
+def register(mcp):
+    """Registers the elderly wait time CCS tool with the FastMCP server."""
+    @mcp.tool(
+        description="Retrieve data on the number of applicants and average waiting time for subsidised community care services for the elderly in Hong Kong."
+    )
+    def get_elderly_community_care_services(
+        start_year: Annotated[int, Field(description="Start year for data range")],
+        end_year: Annotated[int, Field(description="End year for data range")],
+    ) -> List[Dict[str, Any]]:
+        """
+        MCP tool to get the number of applicants and average waiting time for subsidised community care services
+        for the elderly in Hong Kong.
+
+        Args:
+            start_year: Start year for data range
+            end_year: End year for data range
+
+        Returns:
+            List of dictionaries containing data on applicants and waiting times for the specified year range.
+        """
+        return _get_elderly_community_care_services(start_year, end_year)
 
 
 def fetch_elderly_wait_time_data(
@@ -32,6 +57,7 @@ def fetch_elderly_wait_time_data(
     # The content is in UTF-16 LE encoding
     content = response.content.decode("utf-16-le")
     # Ensure consistent line endings by replacing \r\n with \n
+
     csv_file = io.StringIO(content)
     csv_reader = csv.DictReader(csv_file, delimiter="\t")
 
@@ -68,9 +94,12 @@ def fetch_elderly_wait_time_data(
     return filtered_data
 
 
-def get_elderly_wait_time_ccs(start_year: int, end_year: int) -> List[Dict[str, Any]]:
+def _get_elderly_community_care_services(
+    start_year: Annotated[int, Field(description="Start year for data range")],
+    end_year: Annotated[int, Field(description="End year for data range")],
+) -> List[Dict[str, Any]]:
     """
-    MCP tool to get the number of applicants and average waiting time for subsidised community care services
+    Private function to get the number of applicants and average waiting time for subsidised community care services
     for the elderly in Hong Kong.
 
     Args:
@@ -81,3 +110,4 @@ def get_elderly_wait_time_ccs(start_year: int, end_year: int) -> List[Dict[str, 
         List of dictionaries containing data on applicants and waiting times for the specified year range.
     """
     return fetch_elderly_wait_time_data(start_year, end_year)
+

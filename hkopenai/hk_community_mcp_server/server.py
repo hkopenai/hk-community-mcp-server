@@ -16,13 +16,7 @@ def create_mcp_server():
     """Create and configure the MCP server"""
     mcp = FastMCP(name="HK OpenAI community Server")
 
-    @mcp.tool(
-        description="Retrieve data on the number of applicants and average waiting time for subsidised community care services for the elderly in Hong Kong."
-    )
-    def get_elderly_wait_time_ccs(start_year: int, end_year: int) -> List[Dict]:
-        return tool_elderly_wait_time_ccs.fetch_elderly_wait_time_data(
-            start_year, end_year
-        )
+    tool_elderly_wait_time_ccs.register(mcp)
 
     return mcp
 

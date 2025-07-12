@@ -60,7 +60,10 @@ def fetch_elderly_wait_time_data(
     # Ensure consistent line endings by replacing \r\n with \n
 
     csv_file = io.StringIO(content)
-    csv_reader = csv.DictReader(csv_file, delimiter="\t")
+    # Create a new DictReader with cleaned fieldnames
+    reader = csv.reader(csv_file, delimiter="\t")
+    headers = [header.replace('\x00', '') for header in next(reader)]
+    csv_reader = csv.DictReader(csv_file, fieldnames=headers, delimiter="\t")
 
     # Filter data by year range and extract English content only, excluding "As at date"
     filtered_data = []

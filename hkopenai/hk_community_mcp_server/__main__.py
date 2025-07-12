@@ -6,8 +6,9 @@ various tools and resources for the Hong Kong community.
 """
 
 import argparse
-from hkopenai.hk_community_mcp_server.server import main
 import os
+
+from hkopenai.hk_community_mcp_server.server import main
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="HK Community MCP Server")

@@ -7,8 +7,9 @@ waiting times for subsidised community care services for the elderly in Hong Kon
 
 import csv
 import io
+from typing import Any, Dict, List
+
 import requests
-from typing import Dict, List, Any
 from pydantic import Field
 from typing_extensions import Annotated
 

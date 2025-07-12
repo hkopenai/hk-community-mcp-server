@@ -5,11 +5,9 @@ This module provides functionality to create and start the MCP server, which off
 various tools for accessing data related to the Hong Kong community.
 """
 
-import argparse
 from fastmcp import FastMCP
+
 from hkopenai.hk_community_mcp_server import tool_elderly_wait_time_ccs
-from typing import Dict, List, Annotated, Optional
-from pydantic import Field
 
 
 def create_mcp_server():

@@ -27,14 +27,13 @@ class TestElderlyWaitTimeCCS(unittest.TestCase):
         returns empty results for non-matching years, and handles partial year matches.
         '''
         mock_csv_data = (
-            b"\xff\xfe"  # UTF-16 LE BOM
-            b"A\x00s\x00 \x00a\x00t\x00 \x00d\x00a\x00t\x00e\x00\tS\x00u\x00b\x00s\x00i\x00d\x00i\x00s\x00e\x00d\x00 \x00C\x00C\x00S\x00 \x00-\x00 \x00C\x00C\x00S\x00P\x00 \x00(\\N\x00o\x00.\x00 \x00o\x00f\x00 \x00a\x00p\x00p\x00l\x00i\x00c\x00a\x00n\x00t\x00s\x00)\x00\tS\x00u\x00b\x00s\x00i\x00d\x00i\x00s\x00e\x00d\x00 \x00C\x00C\x00S\x00 \x00-\x00 \x00C\x00C\x00S\x00P\x00 \x00(\\A\x00v\x00e\x00r\x00a\x00g\x00e\x00 \x00w\x00a\x00i\x00t\x00i\x00n\x00g\x00 \x00t\x00i\x00m\x00e\x00 \x00i\x00n\x00 \x00m\x00o\x00n\x00t\x00h\x00s\x00)\x00\r\x00\n\x00" # Header
-            b"3\x001\x00-\x001\x002\x00-\x001\x009\x00\t1\x000\x000\x00\t1\x002\x00\r\x00\n\x00"
+            "As at date\tSubsidised CCS - CCSP (No. of applicants)\tSubsidised CCS - CCSP (Average waiting time in months)\n"
+            "31-12-19\t1000\t12\n"
         )
 
         with patch("requests.get") as mock_requests_get:
             mock_response = MagicMock()
-            mock_response.content = mock_csv_data
+            mock_response.content = mock_csv_data.encode("utf-16-le")
             mock_response.raise_for_status.return_value = None
             mock_requests_get.return_value = mock_response
 
@@ -49,12 +48,11 @@ class TestElderlyWaitTimeCCS(unittest.TestCase):
 
             # Test partial year match
             mock_csv_data_partial = (
-                b"\xff\xfe"  # UTF-16 LE BOM
-                b"A\x00s\x00 \x00a\x00t\x00 \x00d\x00a\x00t\x00e\x00\tS\x00u\x00b\x00s\x00i\x00d\x00i\x00s\x00e\x00d\x00 \x00C\x00C\x00S\x00 \x00-\x00 \x00C\x00C\x00S\x00P\x00 \x00(\x00N\x00o\x00.\x00 \x00o\x00f\x00 \x00a\x00p\x00p\x00l\x00i\x00c\x00a\x00n\x00t\x00s\x00)\x00\tS\x00u\x00b\x00s\x00i\x00d\x00i\x00s\x00e\x00d\x00 \x00C\x00C\x00S\x00 \x00-\x00 \x00C\x00C\x00S\x00P\x00 \x00(\x00A\x00v\x00e\x00r\x00a\x00g\x00e\x00 \x00w\x00a\x00i\x00t\x00i\x00n\x00g\x00 \x00t\x00i\x00m\x00e\x00 \x00i\x00n\x00 \x00m\x00o\x00n\x00t\x00h\x00s\x00)\x00\r\x00\n\x00" # Header
-                b"3\x001\x00-\x001\x002\x00-\x001\x009\x00\t1\x000\x000\x00\t1\x002\x00\r\x00\n\x00"
-                b"3\x001\x00-\x001\x002\x00-\x002\x000\x00\t1\x001\x000\x00\t1\x003\x00\r\x00\n\x00"
+                "As at date\tSubsidised CCS - CCSP (No. of applicants)\tSubsidised CCS - CCSP (Average waiting time in months)\n"
+                "31-12-19\t1000\t12\n"
+                "31-12-20\t1100\t13\n"
             )
-            mock_response.content = mock_csv_data_partial
+            mock_response.content = mock_csv_data_partial.encode("utf-16-le")
             mock_requests_get.return_value = mock_response
             result = _get_elderly_community_care_services(2019, 2020)
             self.assertEqual(len(result), 2)

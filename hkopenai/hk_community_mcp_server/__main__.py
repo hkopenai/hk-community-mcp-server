@@ -8,7 +8,7 @@ various tools and resources for the Hong Kong community.
 
 
 from hkopenai_common.cli_utils import cli_main
-from .server import server
+from .server import create_mcp_server
 
 if __name__ == "__main__":
-    cli_main(server, "HK Community MCP Server")
+    cli_main(create_mcp_server, "HK Community MCP Server")

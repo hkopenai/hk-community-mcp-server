@@ -1,14 +1,15 @@
-'''
+
+"""
 Module for testing the elderly wait time CCS tool.
 
 This module contains unit tests for fetching and filtering elderly wait time data.
-'''
+"""
 
 import unittest
 from unittest.mock import patch, MagicMock
 
-from hkopenai.hk_community_mcp_server.tool_elderly_wait_time_ccs import _get_elderly_community_care_services
-from hkopenai.hk_community_mcp_server.tool_elderly_wait_time_ccs import register
+from hkopenai.hk_community_mcp_server.tools.elderly_community_care_services import register
+from hkopenai.hk_community_mcp_server.tools.elderly_community_care_services import _get_elderly_community_care_services # Import the private function
 
 
 class TestElderlyWaitTimeCCS(unittest.TestCase):
@@ -19,43 +20,36 @@ class TestElderlyWaitTimeCCS(unittest.TestCase):
     for elderly wait time CCS work as expected.
     '''
 
-    def test_get_elderly_community_care_services(self):
+    @patch("hkopenai.hk_community_mcp_server.tools.elderly_community_care_services.fetch_csv_from_url")
+    def test_get_elderly_community_care_services(self, mock_fetch_csv_from_url):
         '''
         Test the retrieval and filtering of elderly community care services data.
 
         This test verifies that the function correctly filters data by year range,
         returns empty results for non-matching years, and handles partial year matches.
         '''
-        mock_csv_data = (
-            "As at date\tSubsidised CCS - CCSP (No. of applicants)\tSubsidised CCS - CCSP (Average waiting time in months)\n"
-            "31-12-19\t1000\t12\n"
-        )
+        mock_csv_data = [
+            {"As at date": "31-12-19", "Subsidised CCS - CCSP (No. of applicants)": "1000", "Subsidised CCS - CCSP (Average waiting time in months)": "12"},
+            {"As at date": "31-12-20", "Subsidised CCS - CCSP (No. of applicants)": "1100", "Subsidised CCS - CCSP (Average waiting time in months)": "13"},
+            {"As at date": "31-12-21", "Subsidised CCS - CCSP (No. of applicants)": "1200", "Subsidised CCS - CCSP (Average waiting time in months)": "14"},
+        ]
+        mock_fetch_csv_from_url.return_value = mock_csv_data
 
-        with patch("requests.get") as mock_requests_get:
-            mock_response = MagicMock()
-            mock_response.content = mock_csv_data.encode("utf-16-le")
-            mock_response.raise_for_status.return_value = None
-            mock_requests_get.return_value = mock_response
+        # Test filtering by year range
+        result = _get_elderly_community_care_services(2019, 2019)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["date"], "31-12-19")
+        self.assertEqual(result[0]["data"]["Subsidised CCS - CCSP (No. of applicants)"], "1000")
 
-            # Test filtering by year range
-            result = _get_elderly_community_care_services(2019, 2019)
-            self.assertEqual(len(result), 1)
-            self.assertEqual(result[0]["date"], "31-12-19")
+        # Test empty result for non-matching years
+        result = _get_elderly_community_care_services(2022, 2023)
+        self.assertEqual(len(result), 0)
 
-            # Test empty result for non-matching years
-            result = _get_elderly_community_care_services(2022, 2023)
-            self.assertEqual(len(result), 0)
-
-            # Test partial year match
-            mock_csv_data_partial = (
-                "As at date\tSubsidised CCS - CCSP (No. of applicants)\tSubsidised CCS - CCSP (Average waiting time in months)\n"
-                "31-12-19\t1000\t12\n"
-                "31-12-20\t1100\t13\n"
-            )
-            mock_response.content = mock_csv_data_partial.encode("utf-16-le")
-            mock_requests_get.return_value = mock_response
-            result = _get_elderly_community_care_services(2019, 2020)
-            self.assertEqual(len(result), 2)
+        # Test partial year match
+        result = _get_elderly_community_care_services(2019, 2020)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]["date"], "31-12-19")
+        self.assertEqual(result[1]["date"], "31-12-20")
 
     def test_register_tool(self):
         '''
@@ -89,7 +83,7 @@ class TestElderlyWaitTimeCCS(unittest.TestCase):
 
         # Call the decorated function and verify it calls _get_elderly_community_care_services
         with patch(
-            "hkopenai.hk_community_mcp_server.tool_elderly_wait_time_ccs._get_elderly_community_care_services"
+            "hkopenai.hk_community_mcp_server.tools.elderly_community_care_services._get_elderly_community_care_services" # Changed to mock the private function
         ) as mock_get_elderly_community_care_services:
             decorated_function(start_year=2018, end_year=2019)
             mock_get_elderly_community_care_services.assert_called_once_with(2018, 2019)

@@ -5,10 +5,8 @@ This module serves as the entry point for starting the MCP server, which provide
 various tools and resources for the Hong Kong community.
 """
 
-
-
 from hkopenai_common.cli_utils import cli_main
-from .server import create_mcp_server
+from . import server
 
 if __name__ == "__main__":
-    cli_main(create_mcp_server, "HK Community MCP Server")
+    cli_main(server, "HK Community MCP Server")

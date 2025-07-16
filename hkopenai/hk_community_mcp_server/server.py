@@ -7,33 +7,13 @@ various tools for accessing data related to the Hong Kong community.
 
 from fastmcp import FastMCP
 
-from hkopenai.hk_community_mcp_server import tool_elderly_wait_time_ccs
+from hkopenai.hk_community_mcp_server.tools import elderly_community_care_services
 
 
-def create_mcp_server():
+def server():
     """Create and configure the MCP server"""
     mcp = FastMCP(name="HK OpenAI community Server")
 
-    tool_elderly_wait_time_ccs.register(mcp)
+    elderly_community_care_services.register(mcp)
 
     return mcp
-
-
-def main(host: str, port: int, sse: bool):
-    """
-    Main function to run the MCP Server.
-
-    Args:
-        args: Command line arguments passed to the function.
-    """
-    server = create_mcp_server()
-
-    if sse:
-        server.run(transport="streamable-http", host=host, port=port)
-        print(f"MCP Server running in SSE mode on port {port}, bound to {host}")
-    else:
-        server.run()
-        print("MCP Server running in stdio mode")
-
-
-

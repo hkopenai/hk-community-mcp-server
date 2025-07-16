@@ -13,12 +13,15 @@ from hkopenai.hk_community_mcp_server.server import server
 class TestApp(unittest.TestCase):
     """
     Test class for MCP server application.
-    
+
     This class contains test cases for verifying the creation and configuration
     of the MCP server, including tool registration.
     """
+
     @patch("hkopenai.hk_community_mcp_server.server.FastMCP")
-    @patch("hkopenai.hk_community_mcp_server.tools.elderly_community_care_services.register")
+    @patch(
+        "hkopenai.hk_community_mcp_server.tools.elderly_community_care_services.register"
+    )
     def test_create_mcp_server(self, mock_register, mock_fastmcp):
         """
         Test the creation of the MCP server and tool registration.

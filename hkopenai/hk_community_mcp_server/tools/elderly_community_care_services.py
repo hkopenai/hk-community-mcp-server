@@ -42,6 +42,9 @@ def _get_elderly_community_care_services(
     url = "https://www.swd.gov.hk/datagovhk/elderly/statistics-on-waiting-list-and-waiting-time-for-ccs.csv"
     data = fetch_csv_from_url(url, encoding="utf-16-le", delimiter="\t")
 
+    if "error" in data:
+        return data
+
     # Filter data by year range and extract English content only, excluding "As at date"
     filtered_data = []
     for row in data:

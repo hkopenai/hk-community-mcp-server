@@ -7,7 +7,7 @@ various tools for accessing data related to the Hong Kong community.
 
 from fastmcp import FastMCP
 
-from hkopenai.hk_community_mcp_server.tools import elderly_community_care_services
+from .tools import elderly_community_care_services
 
 
 def server():
